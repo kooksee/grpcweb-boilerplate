@@ -17,9 +17,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 
-	"github.com/johanbrandhorst/grpcweb-boilerplate/backend"
-	"github.com/johanbrandhorst/grpcweb-boilerplate/frontend/bundle"
-	"github.com/johanbrandhorst/grpcweb-boilerplate/proto/server"
+	"github.com/kooksee/grpcweb-boilerplate/backend"
+	"github.com/kooksee/grpcweb-boilerplate/frontend/bundle"
+	"github.com/kooksee/grpcweb-boilerplate/proto/server"
 )
 
 var logger *logrus.Logger

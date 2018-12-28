@@ -10,6 +10,8 @@
 		proto/web.proto
 
 	It has these top-level messages:
+		FooRequest
+		FooResponse
 */
 package client
 
@@ -25,6 +27,162 @@ import (
 // is compatible with the jspb package it is being compiled against.
 const _ = jspb.JspbPackageIsVersion2
 
+type FooRequest struct {
+	Text  string
+	Times int32
+}
+
+// GetText gets the Text of the FooRequest.
+func (m *FooRequest) GetText() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Text
+}
+
+// GetTimes gets the Times of the FooRequest.
+func (m *FooRequest) GetTimes() (x int32) {
+	if m == nil {
+		return x
+	}
+	return m.Times
+}
+
+// MarshalToWriter marshals FooRequest to the provided writer.
+func (m *FooRequest) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.Text) > 0 {
+		writer.WriteString(1, m.Text)
+	}
+
+	if m.Times != 0 {
+		writer.WriteInt32(2, m.Times)
+	}
+
+	return
+}
+
+// Marshal marshals FooRequest to a slice of bytes.
+func (m *FooRequest) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a FooRequest from the provided reader.
+func (m *FooRequest) UnmarshalFromReader(reader jspb.Reader) *FooRequest {
+	for reader.Next() {
+		if m == nil {
+			m = &FooRequest{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Text = reader.ReadString()
+		case 2:
+			m.Times = reader.ReadInt32()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a FooRequest from a slice of bytes.
+func (m *FooRequest) Unmarshal(rawBytes []byte) (*FooRequest, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+type FooResponse struct {
+	Text   string
+	Result bool
+}
+
+// GetText gets the Text of the FooResponse.
+func (m *FooResponse) GetText() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Text
+}
+
+// GetResult gets the Result of the FooResponse.
+func (m *FooResponse) GetResult() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.Result
+}
+
+// MarshalToWriter marshals FooResponse to the provided writer.
+func (m *FooResponse) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.Text) > 0 {
+		writer.WriteString(1, m.Text)
+	}
+
+	if m.Result {
+		writer.WriteBool(2, m.Result)
+	}
+
+	return
+}
+
+// Marshal marshals FooResponse to a slice of bytes.
+func (m *FooResponse) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a FooResponse from the provided reader.
+func (m *FooResponse) UnmarshalFromReader(reader jspb.Reader) *FooResponse {
+	for reader.Next() {
+		if m == nil {
+			m = &FooResponse{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Text = reader.ReadString()
+		case 2:
+			m.Result = reader.ReadBool()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a FooResponse from a slice of bytes.
+func (m *FooResponse) Unmarshal(rawBytes []byte) (*FooResponse, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpcweb.Client
@@ -35,9 +193,8 @@ const _ = grpcweb.GrpcWebPackageIsVersion3
 
 // Client API for Backend service
 
-// Backend defines the interface exposed by the backend.
-// TODO: Define functionality exposed by backend.
 type BackendClient interface {
+	Foo(ctx context.Context, in *FooRequest, opts ...grpcweb.CallOption) (*FooResponse, error)
 }
 
 type backendClient struct {
@@ -49,4 +206,13 @@ func NewBackendClient(hostname string, opts ...grpcweb.DialOption) BackendClient
 	return &backendClient{
 		client: grpcweb.NewClient(hostname, "web.Backend", opts...),
 	}
+}
+
+func (c *backendClient) Foo(ctx context.Context, in *FooRequest, opts ...grpcweb.CallOption) (*FooResponse, error) {
+	resp, err := c.client.RPCCall(ctx, "Foo", in.Marshal(), opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return new(FooResponse).Unmarshal(resp)
 }

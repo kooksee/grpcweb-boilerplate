@@ -2,6 +2,8 @@ generate:
 	protoc -I. -Ivendor/ ./proto/web.proto \
 		--gopherjs_out=plugins=grpc:$$GOPATH/src \
 		--go_out=plugins=grpc:$$GOPATH/src
+
+gf:
 	go generate ./frontend/
 
 clean:
